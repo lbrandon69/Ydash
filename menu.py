@@ -1,6 +1,7 @@
 import pygame
 import sys
 from map import block_map, init_level
+from player import Player
 
 pygame.init()
 
@@ -62,12 +63,34 @@ def start_game():
     running = True
     elements = pygame.sprite.Group()
 
+    scroll_speed = 4
+    scroll_position = 0
+
+    levels = ["level_1.csv", "level_2.csv"]
+    level = 0
+    level_data = block_map(levels[level])
+    init_level(level_data, elements)
+
+    player_image = pygame.Surface((32, 32))
+    player_image.fill((0, 255, 0)) 
+    player = Player(player_image, elements, (150, 150), elements)
+
+    clock = pygame.time.Clock()
+
     while running:
         screen.fill(BLUE)
-        levels = ["level_1.csv", "level_2.csv"]
-        level = 0
-        init_level(block_map(levels[level]), elements)
+
+        scroll_position += scroll_speed
+        if scroll_position > len(level_data) * 50:
+            scroll_position = 0
+
+        for element in elements:
+            element.rect.x -= scroll_speed 
+
         elements.draw(screen)
+
+        player.update()
+
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -78,12 +101,14 @@ def start_game():
                 if event.key == pygame.K_ESCAPE:
                     running = False
 
+        clock.tick(60)
+
 def choose_level():
     running = True
     while running:
         screen.fill(BLACK)
         draw_text("Sélection des niveaux", font, WHITE, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        pygame.display.flip()
+        pygame.display.flip() 
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
