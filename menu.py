@@ -1,5 +1,6 @@
 import pygame
 import sys
+from map import block_map, init_level
 
 pygame.init()
 
@@ -59,9 +60,14 @@ def main_menu():
 
 def start_game():
     running = True
+    elements = pygame.sprite.Group()
+
     while running:
         screen.fill(BLUE)
-        draw_text("Jeu", font, WHITE, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        levels = ["level_1.csv", "level_2.csv"]
+        level = 0
+        init_level(block_map(levels[level]), elements)
+        elements.draw(screen)
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -86,6 +92,3 @@ def choose_level():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
-
-if __name__ == "__main__":
-    main_menu()
