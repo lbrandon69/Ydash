@@ -63,7 +63,7 @@ def start_game():
     running = True
     elements = pygame.sprite.Group()
 
-    scroll_speed = 4
+    scroll_speed = 5
     scroll_position = 0
 
     levels = ["level_1.csv", "level_2.csv"]
@@ -91,6 +91,9 @@ def start_game():
 
         player.update()
 
+        if player.died == True or player.win == True :
+            running = False
+
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -102,6 +105,7 @@ def start_game():
                     running = False
 
         clock.tick(60)
+    pygame.quit
 
 def choose_level():
     running = True

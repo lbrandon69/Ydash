@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
         self.isjump = False
         self.vel = Vector2(0, 0)
 
-        self.speed_x = 4
+        self.speed_x = 5
 
     def collide(self, yvel, platforms):
         for p in platforms:
