@@ -14,12 +14,12 @@ class Player(pygame.sprite.Sprite):
         
         self.image = pygame.transform.smoothscale(image, (32, 32))  
         self.rect = self.image.get_rect(center=pos)  
-        self.jump_amount = 10 
+        self.jump_amount = 8
         self.particles = [] 
         self.isjump = False
         self.vel = Vector2(0, 0)
 
-        self.speed_x = 5
+        self.speed_x = 4
 
     def collide(self, yvel, platforms):
         for p in platforms:
@@ -38,6 +38,8 @@ class Player(pygame.sprite.Sprite):
                         self.isjump = False
                     elif yvel < 0:
                         self.rect.top = p.rect.bottom
+                    elif self.rect.right > p.rect.left and self.rect.left < p.rect.left:
+                        self.died = True
                     else:
                         self.vel.x = 0
                         self.rect.right = p.rect.left
