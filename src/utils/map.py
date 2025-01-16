@@ -1,6 +1,7 @@
 import csv
 import pygame
-from obstacles import Platform, Coin, Spike, End
+from pathlib import Path
+from utils.obstacles import Platform, Coin, Spike, End
 
 def init_level(map, elements):
     x = 0
@@ -26,8 +27,10 @@ def init_level(map, elements):
         x = 0
 
 def block_map(level_num):
+    base_path = Path(__file__).resolve().parent.parent.parent
+    level_path = base_path / level_num
     lvl = []
-    with open(level_num, newline='') as csvfile:
+    with open(level_path, newline='') as csvfile:
         trash = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in trash:
             lvl.append(row)

@@ -2,8 +2,9 @@ import pygame
 import sys
 import csv
 import time
-from map import block_map, init_level, draw_editor_grid
-from player import Player
+from pathlib import Path
+from utils.map import block_map, init_level, draw_editor_grid
+from utils.player import Player
 
 pygame.init()
 
@@ -71,8 +72,8 @@ def start_game():
     scroll_speed = 4
     scroll_position = 0
 
-    levels = ["level_1.csv", "custom_map.csv","level_2.csv"]
-    level = 0
+    levels = ["data/maps/level_1.csv", "data/maps/custom_map.csv","data/maps/level_2.csv"]
+    level = 1
     level_data = block_map(levels[level])
     init_level(level_data, elements)
 
@@ -158,7 +159,9 @@ def create_level():
                 elif event.key == pygame.K_4:
                     selected_object = 3
                 elif event.key == pygame.K_s:
-                    with open("custom_map.csv", "w", newline="") as csvfile:
+                    base_path = Path(__file__).resolve().parent.parent.parent
+                    level_path = base_path / "data/maps/custom_map.csv"
+                    with open(level_path, "w", newline="") as csvfile:
                         writer = csv.writer(csvfile)
                         for row in grid:
                             writer.writerow(row)

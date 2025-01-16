@@ -1,6 +1,6 @@
 import pygame
 from pygame.math import Vector2
-from obstacles import Platform, Coin, Spike, End
+from utils.obstacles import Platform, Coin, Spike, End
 
 GRAVITY = Vector2(0, 0.5)
 
