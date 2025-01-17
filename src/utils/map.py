@@ -14,7 +14,7 @@ def init_level(map, elements):
                 Platform("./data/img/Grounds/ground_01.png", (x, y), elements)  
 
             if col == "Coin":
-                Coin(None, (x, y), elements) 
+                Coin("./data/img/Coins/coin_01.png", (x, y), elements) 
 
             if col == "Spike":
                 Spike(None, (x, y), elements) 

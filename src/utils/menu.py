@@ -96,6 +96,8 @@ def start_game():
         elements.draw(screen)
 
         player.update()
+        player.update_particles()
+        player.draw_particles(screen)
         if player.died == True or player.win == True :
             running = False
 

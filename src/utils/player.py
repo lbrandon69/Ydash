@@ -1,5 +1,7 @@
 import pygame
 from pygame.math import Vector2
+import random
+import time
 from utils.obstacles import Platform, Coin, Spike, End
 
 GRAVITY = Vector2(0, 0.5)
@@ -25,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.speed_x = 4
         
         self.rotation_angle = 0 
-        self.rotation_speed = -8
+        self.rotation_speed = -6
 
     def collide(self, yvel, platforms):
         for p in platforms:
@@ -55,6 +57,39 @@ class Player(pygame.sprite.Sprite):
         self.vel.y = -self.jump_amount
         self.isjump = True
 
+    def create_particle(self):
+        """Ajoute une particule directement au bord inférieur gauche du joueur, uniquement si le joueur est au sol."""
+        if self.isjump == False:
+            particle = {
+                'pos': [self.rect.left + random.randint(0, 5), self.rect.bottom],  
+                'vel': [random.uniform(-2, -0.5), random.uniform(-1, 1)],  
+                'size': random.randint(3, 6),
+                'color': (255, 255, 255), 
+                'lifetime': 30
+            }
+            self.particles.append(particle)
+
+
+    def update_particles(self):
+        for particle in self.particles[:]:
+            particle['lifetime'] -= 1
+            if particle['lifetime'] <= 0:
+                self.particles.remove(particle)
+                continue
+
+            particle['pos'][0] += particle['vel'][0]
+            particle['pos'][1] += particle['vel'][1]
+            particle['size'] = max(0, particle['size'] - 0.1)
+
+    def draw_particles(self, screen):
+        """Dessine les particules sur l'écran."""
+        for particle in self.particles:
+            pygame.draw.rect(
+                screen, 
+                particle['color'], 
+                (particle['pos'][0], particle['pos'][1], particle['size'], particle['size'])
+            )
+
     def update(self):
         keys = pygame.key.get_pressed()
 
@@ -83,6 +118,10 @@ class Player(pygame.sprite.Sprite):
             self.image = rotated_image
             self.rect = self.image.get_rect(center=self.rect.center)
 
+        if self.vel.x != 0 or self.vel.y != 0:
+            self.create_particle()
+
+        self.update_particles() 
 
         self.rect.x += self.speed_x 
         self.rect.top += self.vel.y
