@@ -73,7 +73,7 @@ def start_game():
     scroll_position = 0
 
     levels = ["data/maps/level_1.csv", "data/maps/custom_map.csv","data/maps/level_2.csv"]
-    level = 1
+    level = 0
     level_data = block_map(levels[level])
     init_level(level_data, elements)
 

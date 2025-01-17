@@ -36,10 +36,10 @@ class Player(pygame.sprite.Sprite):
                         self.vel.y = 0
                         self.onGround = True
                         self.isjump = False
-                    elif yvel < 0:
-                        self.rect.top = p.rect.bottom
                     elif self.rect.right > p.rect.left and self.rect.left < p.rect.left:
                         self.died = True
+                    elif yvel < 0:
+                        self.rect.top = p.rect.bottom
                     else:
                         self.vel.x = 0
                         self.rect.right = p.rect.left
