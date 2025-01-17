@@ -40,6 +40,9 @@ def main_menu():
     button_create = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 50)
     button_quit = pygame.Rect(SCREEN_WIDTH // 2 - 150, 500, 300, 50)
 
+    click_released = False
+    level = 0
+
     while True:
         screen.fill(BLACK)
 
@@ -48,15 +51,26 @@ def main_menu():
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
 
-        if draw_button(screen, "Jouer", button_play, GRAY, BLUE, font, mouse_pos, mouse_click):
-            start_game()
-        if draw_button(screen, "Choisir un niveau", button_levels, GRAY, BLUE, font, mouse_pos, mouse_click):
-            choose_level()
-        if draw_button(screen, "Crée un niveau", button_create, GRAY, BLUE, font, mouse_pos, mouse_click):
-            create_level()
-        if draw_button(screen, "Quitter", button_quit, GRAY, BLUE, font, mouse_pos, mouse_click):
-            pygame.quit()
-            sys.exit()
+        if not mouse_click:
+            click_released = True  
+
+        if mouse_click and click_released:
+            if button_play.collidepoint(mouse_pos):
+                start_game(level)
+            elif button_levels.collidepoint(mouse_pos):
+                level = choose_level()
+            elif button_create.collidepoint(mouse_pos):
+                create_level()
+            elif button_quit.collidepoint(mouse_pos):
+                pygame.quit()
+                sys.exit()
+
+            click_released = False  
+
+        draw_button(screen, "Jouer", button_play, GRAY, BLUE, font, mouse_pos, False)
+        draw_button(screen, "Choisir un niveau", button_levels, GRAY, BLUE, font, mouse_pos, False)
+        draw_button(screen, "Crée un niveau", button_create, GRAY, BLUE, font, mouse_pos, False)
+        draw_button(screen, "Quitter", button_quit, GRAY, BLUE, font, mouse_pos, False)
 
         pygame.display.flip()
 
@@ -65,15 +79,15 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
 
-def start_game():
+
+def start_game(level):
     running = True
     elements = pygame.sprite.Group()
 
     scroll_speed = 4
     scroll_position = 0
 
-    levels = ["data/maps/level_1.csv", "data/maps/custom_map.csv","data/maps/level_2.csv"]
-    level = 0
+    levels = ["data/maps/level_1.csv", "data/maps/level_2.csv","data/maps/custom_map.csv"]
     level_data = block_map(levels[level])
     init_level(level_data, elements)
 
@@ -112,11 +126,40 @@ def start_game():
         clock.tick(60)
 
 def choose_level():
+    button_level_1 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200, 300, 50)
+    button_level_2 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
+    button_custom_game = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 50)
+
     running = True
+    click_released = False  
+    selected_level = 0 
+    
     while running:
         screen.fill(BLACK)
-        draw_text("Sélection des niveaux", font, WHITE, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        pygame.display.flip() 
+        draw_text("YDash", font, WHITE, screen, SCREEN_WIDTH // 2, 100)
+
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = pygame.mouse.get_pressed()[0]
+
+        if not mouse_click:
+            click_released = True
+
+        if mouse_click and click_released:
+            if button_level_1.collidepoint(mouse_pos):
+                selected_level = 0
+                running = False
+            elif button_level_2.collidepoint(mouse_pos):
+                selected_level = 1
+                running = False
+            elif button_custom_game.collidepoint(mouse_pos):
+                selected_level = 2
+                running = False
+
+        draw_button(screen, "Level 1", button_level_1, GRAY, BLUE, font, mouse_pos, False)
+        draw_button(screen, "Level 2", button_level_2, GRAY, BLUE, font, mouse_pos, False)
+        draw_button(screen, "Custom Level", button_custom_game, GRAY, BLUE, font, mouse_pos, False)
+
+        pygame.display.flip()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -125,6 +168,9 @@ def choose_level():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
+
+    return selected_level
+
 
 def create_level():
     running = True
