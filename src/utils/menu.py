@@ -72,14 +72,14 @@ def start_game():
     scroll_speed = 4
     scroll_position = 0
 
-    levels = ["data/maps/level_1.csv", "data/maps/custom_map.csv","data/maps/level_2.csv"]
+    levels = ["data/maps/custom_map.csv", "data/maps/level_1.csv","data/maps/level_2.csv"]
     level = 0
     level_data = block_map(levels[level])
     init_level(level_data, elements)
 
-    player_image = pygame.Surface((32, 32))
-    player_image.fill((0, 255, 0)) 
-    player = Player(player_image, elements, (150, 150), elements)
+    player_image_path = "./data/img/Players/player_01.png"
+    player = Player(player_image_path, elements, (150, 150), elements)
+
 
     clock = pygame.time.Clock()
 

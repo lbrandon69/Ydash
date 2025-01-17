@@ -11,7 +11,7 @@ def init_level(map, elements):
         for col in row:
 
             if col == "0":
-                Platform(None, (x, y), elements)  
+                Platform("./data/img/Grounds/ground_01.png", (x, y), elements)  
 
             if col == "Coin":
                 Coin(None, (x, y), elements) 
