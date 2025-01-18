@@ -110,7 +110,9 @@ def start_game(level):
         elements.draw(screen)
 
         player.update()
-        if player.died == True or player.win == True :
+        if player.died == True :
+            running = False
+        elif player.win == True :
             running = False
 
         pygame.display.flip()
@@ -234,3 +236,6 @@ def create_level():
         draw_text(f"Objet: {OBJECTS[selected_object]}", font, BLACK, screen, 85, SCREEN_HEIGHT - 30)
 
         pygame.display.flip()
+
+def win():
+    draw_text("WIN", GRAY)
