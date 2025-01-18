@@ -110,10 +110,18 @@ def start_game(level):
         elements.draw(screen)
 
         player.update()
-        if player.died == True :
-            running = False
-        elif player.win == True :
-            running = False
+        if player.died:
+            result = lose_screen()
+            if result == "menu":
+                running = False
+            elif result == "replay":
+                start_game(level)
+        elif player.win:
+            result = win_screen()
+            if result == "menu":
+                running = False
+            elif result == "replay":
+                start_game(level)
 
         pygame.display.flip()
 
@@ -237,5 +245,50 @@ def create_level():
 
         pygame.display.flip()
 
-def win():
-    draw_text("WIN", GRAY)
+def win_screen():
+    running = True
+
+    while running:
+        screen.fill(BLACK)
+        draw_text("Vous avez gagné !", font, WHITE, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+        
+        button_menu = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2, 300, 50)
+        button_replay = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100, 300, 50)
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = pygame.mouse.get_pressed()[0]
+
+        if draw_button(screen, "Retour au menu", button_menu, GRAY, BLUE, font, mouse_pos, mouse_click):
+            return "menu"
+        if draw_button(screen, "Rejouer", button_replay, GRAY, BLUE, font, mouse_pos, mouse_click):
+            return "replay"
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+def lose_screen():
+    running = True
+
+    while running:
+        screen.fill(BLACK)
+        draw_text("Vous avez perdu !", font, WHITE, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+
+        button_menu = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2, 300, 50)
+        button_replay = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100, 300, 50)
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_click = pygame.mouse.get_pressed()[0]
+
+        if draw_button(screen, "Retour au menu", button_menu, GRAY, BLUE, font, mouse_pos, mouse_click):
+            return "menu"
+        if draw_button(screen, "Rejouer", button_replay, GRAY, BLUE, font, mouse_pos, mouse_click):
+            return "replay"
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
