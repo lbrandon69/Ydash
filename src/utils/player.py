@@ -31,13 +31,13 @@ class Player(pygame.sprite.Sprite):
                 elif isinstance(p, End):
                     self.win = True 
                 elif isinstance(p, Platform):
-                    if yvel > 0:
+                    if self.rect.right > p.rect.left and self.rect.left < p.rect.left:
+                        self.died = True
+                    elif yvel > 0:
                         self.rect.bottom = p.rect.top
                         self.vel.y = 0
                         self.onGround = True
                         self.isjump = False
-                    elif self.rect.right > p.rect.left and self.rect.left < p.rect.left:
-                        self.died = True
                     elif yvel < 0:
                         self.rect.top = p.rect.bottom
                     else:
