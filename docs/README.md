@@ -1,5 +1,6 @@
 # 🎮 Ydash
 Bienvenue dans **Ydash**, une reproduction du célèbre jeu d'arcade où réflexes et précision sont essentiels. Plongez dans un univers coloré, franchissez des obstacles, et relevez des défis à couper le souffle grâce à des niveaux personnalisés et une bande-son immersive !
+
 ## ⚙️ Features
 
 - Gameplay classique : Sautez, esquivez, et survivez dans des niveaux inspirés du jeu original.
@@ -8,7 +9,7 @@ Bienvenue dans **Ydash**, une reproduction du célèbre jeu d'arcade où réflex
 
 - Musique dynamique : Bande-son adaptée à chaque niveau.
 
-- Créateur de niveaux : Concevez vos propres niveaux pour plus de défier.
+- Créateur de niveaux : Concevez vos propres niveaux pour plus de défie.
 
 - Système de skins : Personnalisez votre personnage avec des skins uniques achetable en jouant.
 
@@ -17,7 +18,7 @@ Bienvenue dans **Ydash**, une reproduction du célèbre jeu d'arcade où réflex
 
 Clonez le dépôt :
 ```bash
-    git clone https://github.com/   
+    git clone https://github.com/lbrandon69/Ydash
 ```
 Naviguez dans le répertoire :
 ```bash
