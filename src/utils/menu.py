@@ -267,7 +267,6 @@ def choose_level():
         image = pygame.transform.scale(image, (450, 150))
         screen.blit(image, (SCREEN_WIDTH // 2 - image.get_width() // 2, 100))
 
-
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
 
@@ -475,8 +474,7 @@ def shop_menu(player):
     total_coins = load_coins()
     owned_skins = load_skins()
     selected_skin = load_selected_skin()
-    button_menu = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100, 300, 50)
-
+    button_menu = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 250, 300, 50)
 
     while running:
         screen.fill(BLACK)
