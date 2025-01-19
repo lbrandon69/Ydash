@@ -197,6 +197,9 @@ def start_game(level):
         player.update_particles()
         player.draw_particles(screen)
 
+        total_coins = player.coins
+        save_coins(total_coins)
+
         if player.died:
             stop_music()
             result = lose_screen()
@@ -238,10 +241,6 @@ def start_game(level):
                     play_music("data/music/music_01.mp3")
 
         clock.tick(60)
-
-    total_coins = load_coins()
-    total_coins += player.coins
-    save_coins(total_coins)
 
 
 def choose_level():
