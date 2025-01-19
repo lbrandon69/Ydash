@@ -26,8 +26,13 @@ def save_coins(coins):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    with open(os.path.join(directory, "coins.json"), "w") as file:
-        json.dump({"coins": coins}, file)
+    try:
+        with open(os.path.join(directory, "coins.json"), "w") as file:
+            json.dump({"coins": coins}, file)
+    except PermissionError:
+        print("Erreur : permission refusée pour écrire dans le fichier coins.json.")
+    except Exception as e:
+        print(f"Erreur inattendue : {e}")
 
 def load_skins():
     """
