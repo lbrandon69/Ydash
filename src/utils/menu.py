@@ -7,9 +7,11 @@ from pathlib import Path
 from utils.map import block_map, init_level, draw_editor_grid
 from utils.player import Player
 from utils.background import draw_star_background
+from utils.music import play_music, stop_music
 from utils.progressBar import draw_stats
 
 pygame.init()
+pygame.mixer.init() 
 
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_width(), screen.get_height()
@@ -72,6 +74,8 @@ def main_menu():
     créer un niveau, et quitter. En fonction du choix de l'utilisateur, elle appelle
     d'autres fonctions pour démarrer le jeu, choisir un niveau, ou quitter le jeu.
     """
+    play_music("data/music/music_01.mp3")
+
     button_play = pygame.Rect(SCREEN_WIDTH // 2 - 125, 300, 250, 50)
     button_levels = pygame.Rect(SCREEN_WIDTH // 2 - 125, 370, 250, 50)
     button_create = pygame.Rect(SCREEN_WIDTH // 2 - 125, 440, 250, 50)
@@ -96,6 +100,7 @@ def main_menu():
 
         if mouse_click and click_released:
             if button_play.collidepoint(mouse_pos):
+                stop_music()
                 start_game(level)
             elif button_levels.collidepoint(mouse_pos):
                 level = choose_level()
@@ -121,7 +126,7 @@ def main_menu():
 
 def start_game(level):
     """
-    Démarre le jeu avec le niveau spécifié.
+    Démarre le jeu avec le niveau spécifié et la musique correspondante.
 
     Args:
     - level (int): Le niveau à charger.
@@ -134,7 +139,15 @@ def start_game(level):
 
     levels = ["data/maps/level_1.csv", "data/maps/level_2.csv", "data/maps/custom_map.csv"]
     level_data = block_map(levels[level])
+
+    music_files = [
+        "data/music/music_02.mp3",
+        "data/music/music_03.mp3",
+        "data/music/music_04.mp3"  
+    ]
     
+    play_music(music_files[level])
+
     end_position = init_level(level_data, elements)
 
     TILE_SIZE = 50
@@ -177,16 +190,22 @@ def start_game(level):
         player.draw_particles(screen)
 
         if player.died:
+            stop_music()
             result = lose_screen()
             if result == "menu":
+                play_music("data/music/music_01.mp3")
                 running = False
             elif result == "replay":
+                play_music(music_files[level])
                 start_game(level)
         elif player.win:
+            stop_music()
             result = win_screen()
             if result == "menu":
+                play_music("data/music/music_01.mp3")
                 running = False
             elif result == "replay":
+                play_music(music_files[level])
                 start_game(level)
 
         if end_position:
@@ -203,9 +222,12 @@ def start_game(level):
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    stop_music()
                     running = False
+                    play_music("data/music/music_01.mp3")
 
         clock.tick(60)
+
 
 
 def choose_level():
