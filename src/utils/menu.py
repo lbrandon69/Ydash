@@ -2,6 +2,7 @@ import pygame
 import sys
 import csv
 import time
+import random
 from pathlib import Path
 from utils.map import block_map, init_level, draw_editor_grid
 from utils.player import Player
@@ -23,6 +24,8 @@ def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
+
+
 
 def draw_button(surface, text, rect, color, hover_color, font, mouse_pos, mouse_click):
     if rect.collidepoint(mouse_pos):
@@ -72,7 +75,7 @@ def start_game():
     scroll_speed = 4
     scroll_position = 0
 
-    levels = ["data/maps/custom_map.csv", "data/maps/level_1.csv","data/maps/level_2.csv"]
+    levels = ["data/maps/custom_map.csv", "data/maps/level_1.csv", "data/maps/level_2.csv"]
     level = 0
     level_data = block_map(levels[level])
     init_level(level_data, elements)
@@ -80,25 +83,36 @@ def start_game():
     player_image_path = "./data/img/Players/player_01.png"
     player = Player(player_image_path, elements, (150, 150), elements)
 
+    original_background_image = pygame.image.load("./data/img/Backgrounds/background_01.png").convert()
+    background_image = pygame.transform.scale(
+        original_background_image, 
+        (original_background_image.get_width(), SCREEN_HEIGHT)
+    )
+    background_width = background_image.get_width()
+
+    gradient_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    for y in range(SCREEN_HEIGHT):
+        alpha = int((y / SCREEN_HEIGHT) * 100)
+        pygame.draw.rect(gradient_surface, (0, 0, 0, alpha), (0, y, SCREEN_WIDTH, 1))
 
     clock = pygame.time.Clock()
 
     while running:
-        screen.fill(BLUE)
-
         scroll_position += scroll_speed
-        if scroll_position > len(level_data) * 50:
-            scroll_position = 0
+
+        for i in range(-1, SCREEN_WIDTH // background_width + 2):
+            screen.blit(background_image, (i * background_width - (scroll_position % background_width), 0))
+        screen.blit(gradient_surface, (0, 0))
 
         for element in elements:
-            element.rect.x -= scroll_speed 
+            element.rect.x -= scroll_speed
 
         elements.draw(screen)
 
         player.update()
         player.update_particles()
         player.draw_particles(screen)
-        if player.died == True or player.win == True :
+        if player.died or player.win:
             running = False
 
         pygame.display.flip()
@@ -112,6 +126,7 @@ def start_game():
                     running = False
 
         clock.tick(60)
+
 
 def choose_level():
     running = True

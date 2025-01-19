@@ -36,7 +36,6 @@ class Spike(pygame.sprite.Sprite):
         )
         self.rect = self.image.get_rect(topleft=(position[0], position[1] + 2))
 
-
 class End(pygame.sprite.Sprite):
     def __init__(self, image, position, group):
         super().__init__(group)
