@@ -344,19 +344,26 @@ def create_level():
                 elif event.key == pygame.K_s:
                     base_path = Path(__file__).resolve().parent.parent.parent
                     level_path = base_path / "data/maps/custom_map.csv"
+
                     with open(level_path, "w", newline="") as csvfile:
                         writer = csv.writer(csvfile)
 
-                        end_position = -1
-                        for row_index, row in enumerate(grid):
-                            if "End" in row:
-                                end_position = row.index("End")
-                                for i in range(row_index):
-                                    grid[i] = row[:end_position + 1]
-                                
-                                break
+                        for col_index in range(len(grid[0])):  
+                            start_fill = False
+                            for row_index in range(len(grid)):  
+                                if grid[row_index][col_index] == "End":
+                                    start_fill = True
+                                elif start_fill: 
+                                    grid[row_index][col_index] = "End"
 
-                        for row_index, row in enumerate(grid):
+                            found_end = False
+                            for row_index in reversed(range(len(grid))): 
+                                if grid[row_index][col_index] == "End":
+                                    found_end = True
+                                elif found_end: 
+                                    grid[row_index][col_index] = "End"
+
+                        for row in grid:
                             last_non_empty = -1
                             for i in range(len(row)):
                                 if row[i] != -1: 
