@@ -26,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.platforms = platforms
         self.died = False
         self.win = False
+        self.coins = 0  # Ajouter un compteur de pièces
         
         raw_image = pygame.image.load(image_path).convert_alpha()
         self.original_image = pygame.transform.smoothscale(raw_image, (32, 32)) 
@@ -57,6 +58,7 @@ class Player(pygame.sprite.Sprite):
             if pygame.sprite.collide_rect(self, p):
                 if isinstance(p, Coin):
                     p.kill()
+                    self.coins += 1  # Augmenter le compteur de pièces
                 elif isinstance(p, Spike):
                     self.died = True 
                 elif isinstance(p, End):
