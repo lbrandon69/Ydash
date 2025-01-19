@@ -56,7 +56,7 @@ def block_map(level_num):
             lvl.append(row)
     return lvl
 
-def draw_editor_grid(screen, grid, tile_size, offset_x):
+def draw_editor_grid(screen, grid, tile_size, offset_x, sprite_group):
     """
     Dessine la grille d'édition et les éléments du niveau.
 
@@ -69,6 +69,7 @@ def draw_editor_grid(screen, grid, tile_size, offset_x):
         grid (list): La carte du niveau, représentée par une liste de listes.
         tile_size (int): La taille des tuiles dans la grille.
         offset_x (int): Le décalage horizontal de la vue du niveau, permettant de faire défiler la carte.
+        sprite_group (pygame.sprite.Group): Le groupe de sprites dans lequel les éléments du niveau seront ajoutés. 
     """
     screen.fill((0, 0, 0))
 
