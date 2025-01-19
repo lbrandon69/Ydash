@@ -22,13 +22,38 @@ GRAY = (100, 100, 100)
 font = pygame.font.Font(None, 50)
 
 def draw_text(text, font, color, surface, x, y):
+    """
+    Dessine le texte spécifié à une position donnée sur l'écran.
+
+    Args:
+    - text (str): Le texte à afficher.
+    - font (pygame.font.Font): La police utilisée pour dessiner le texte.
+    - color (tuple): La couleur du texte sous forme de tuple RGB.
+    - surface (pygame.Surface): La surface sur laquelle le texte sera dessiné.
+    - x (int): La coordonnée x de la position du centre du texte.
+    - y (int): La coordonnée y de la position du centre du texte.
+    """
     text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
 
-
-
 def draw_button(surface, text, rect, color, hover_color, font, mouse_pos, mouse_click):
+    """
+    Dessine un bouton avec du texte et gère l'interaction de survol et de clic.
+
+    Args:
+    - surface (pygame.Surface): La surface sur laquelle le bouton sera dessiné.
+    - text (str): Le texte à afficher sur le bouton.
+    - rect (pygame.Rect): Le rectangle qui définit la position et la taille du bouton.
+    - color (tuple): La couleur de fond du bouton lorsqu'il n'est pas survolé.
+    - hover_color (tuple): La couleur de fond du bouton lorsqu'il est survolé.
+    - font (pygame.font.Font): La police utilisée pour le texte du bouton.
+    - mouse_pos (tuple): La position actuelle de la souris.
+    - mouse_click (bool): True si un clic est effectué, sinon False.
+
+    Returns:
+    - bool: True si le bouton a été cliqué, sinon False.
+    """
     if rect.collidepoint(mouse_pos):
         pygame.draw.rect(surface, hover_color, rect)
         if mouse_click:
@@ -39,6 +64,13 @@ def draw_button(surface, text, rect, color, hover_color, font, mouse_pos, mouse_
     return False
 
 def main_menu():
+    """
+    Affiche le menu principal et gère l'interaction de l'utilisateur.
+
+    Cette fonction crée un menu principal avec quatre boutons: jouer, choisir un niveau,
+    créer un niveau, et quitter. En fonction du choix de l'utilisateur, elle appelle
+    d'autres fonctions pour démarrer le jeu, choisir un niveau, ou quitter le jeu.
+    """
     button_play = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200, 300, 50)
     button_levels = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
     button_create = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 50)
@@ -84,6 +116,12 @@ def main_menu():
                 sys.exit()
 
 def start_game(level):
+    """
+    Démarre le jeu avec le niveau spécifié.
+
+    Args:
+    - level (int): Le niveau à charger.
+    """
     running = True
     elements = pygame.sprite.Group()
 
@@ -167,6 +205,12 @@ def start_game(level):
 
 
 def choose_level():
+    """
+    Permet à l'utilisateur de choisir un niveau parmi les options disponibles.
+
+    Returns:
+    - int: Le niveau sélectionné.
+    """
     button_level_1 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200, 300, 50)
     button_level_2 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
     button_custom_game = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 50)
@@ -214,6 +258,11 @@ def choose_level():
 
 
 def create_level():
+    """
+    Permet à l'utilisateur de créer un niveau personnalisé en plaçant des objets sur une grille.
+
+    Le niveau créé est sauvegardé dans un fichier CSV sous forme de données.
+    """
     running = True
     TILE_SIZE = 32
 
@@ -250,7 +299,22 @@ def create_level():
                     level_path = base_path / "data/maps/custom_map.csv"
                     with open(level_path, "w", newline="") as csvfile:
                         writer = csv.writer(csvfile)
-                        for row in grid:
+
+                        end_position = -1
+                        for row_index, row in enumerate(grid):
+                            if "End" in row:
+                                end_position = row.index("End")
+                                for i in range(row_index):
+                                    grid[i] = row[:end_position + 1]
+                                
+                                break
+
+                        for row_index, row in enumerate(grid):
+                            last_non_empty = -1
+                            for i in range(len(row)):
+                                if row[i] != -1: 
+                                    last_non_empty = i
+                            row = row[:last_non_empty + 1] if last_non_empty != -1 else row
                             writer.writerow(row)
                 elif event.key == pygame.K_ESCAPE:
                     running = False
@@ -277,6 +341,12 @@ def create_level():
         pygame.display.flip()
 
 def win_screen():
+    """
+    Affiche l'écran de victoire et permet de choisir entre revenir au menu ou rejouer.
+
+    Returns:
+    - str: "menu" pour retourner au menu, "replay" pour rejouer le niveau.
+    """
     running = True
 
     while running:
@@ -301,6 +371,12 @@ def win_screen():
                 sys.exit()
 
 def lose_screen():
+    """
+    Affiche l'écran de défaite et permet de choisir entre revenir au menu ou rejouer.
+
+    Returns:
+    - str: "menu" pour retourner au menu, "replay" pour rejouer le niveau.
+    """
     running = True
 
     while running:
