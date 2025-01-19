@@ -35,7 +35,9 @@ Assurez-vous d'avoir installé les dépendances nécessaires avec :
    pip install -r requirements.txt
 ```
 
-
+Prérequis :
+- Python 3.10 ou supérieur
+- Pygame 2.0 ou supérieur
 
 ## ✏ Authors
 
