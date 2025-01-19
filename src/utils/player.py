@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
             if pygame.sprite.collide_rect(self, p):
                 if isinstance(p, Coin):
                     p.kill()
-                    self.coins += 1  # Augmenter le compteur de pièces
+                    self.coins += 1  
                 elif isinstance(p, Spike):
                     self.died = True 
                 elif isinstance(p, End):

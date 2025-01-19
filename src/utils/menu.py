@@ -202,7 +202,7 @@ def start_game(level):
             result = lose_screen()
             if result == "menu":
                 play_music("data/music/music_01.mp3")
-                running = False
+                main_menu()
             elif result == "replay":
                 play_music(music_files[level])
                 start_game(level)
@@ -211,7 +211,7 @@ def start_game(level):
             result = win_screen()
             if result == "menu":
                 play_music("data/music/music_01.mp3")
-                running = False
+                main_menu()
             elif result == "replay":
                 play_music(music_files[level])
                 start_game(level)
@@ -463,12 +463,20 @@ def lose_screen():
                 sys.exit()
 
 def shop_menu(player):
+    """
+    Affiche le menu de la boutique où le joueur peut acheter et sélectionner des skins.
+
+    Args:
+    - player: L'objet joueur contenant les informations actuelles du joueur.
+    """
     running = True
     skins = ["skin_01.png", "skin_02.png", "skin_03.png"]
     skin_price = 10
     total_coins = load_coins()
     owned_skins = load_skins()
     selected_skin = load_selected_skin()
+    button_menu = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100, 300, 50)
+
 
     while running:
         screen.fill(BLACK)
@@ -494,6 +502,9 @@ def shop_menu(player):
                         save_coins(total_coins)  
                         save_skins(skin)
                         owned_skins.append(skin)
+
+        if draw_button(screen, "Menu", button_menu, WHITE, (135,224,45), font, mouse_pos, mouse_click):
+            main_menu()
 
         pygame.display.flip()
 

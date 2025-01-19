@@ -2,6 +2,12 @@ import json
 import os
 
 def load_coins():
+    """
+    Charge le nombre de pièces sauvegardées à partir du fichier JSON.
+
+    Returns:
+    - int: Le nombre de pièces disponibles. Retourne 0 si le fichier n'existe pas.
+    """
     try:
         with open("data/json/coins.json", "r") as file:
             data = json.load(file)
@@ -10,10 +16,22 @@ def load_coins():
         return 0
 
 def save_coins(coins):
+    """
+    Sauvegarde le nombre de pièces dans le fichier JSON.
+
+    Args:
+    - coins (int): Le nombre de pièces à sauvegarder.
+    """
     with open("data/json/coins.json", "w") as file:
         json.dump({"coins": coins}, file)
 
 def load_skins():
+    """
+    Charge la liste des skins possédés à partir du fichier JSON.
+
+    Returns:
+    - list: Liste des skins possédés. Retourne une liste vide si le fichier n'existe pas.
+    """
     try:
         with open("data/json/skins.json", "r") as file:
             data = json.load(file)
@@ -22,6 +40,12 @@ def load_skins():
         return []
 
 def save_skins(skin):
+    """
+    Sauvegarde un skin ajouté dans la liste des skins possédés.
+
+    Args:
+    - skin (str): Le nom du skin à ajouter à la liste des skins possédés.
+    """
     skins = load_skins()
     if skin not in skins:
         skins.append(skin)
@@ -29,6 +53,12 @@ def save_skins(skin):
         json.dump({"skins": skins}, file)
 
 def load_selected_skin():
+    """
+    Charge le skin sélectionné à partir du fichier JSON.
+
+    Returns:
+    - str: Le chemin du fichier image du skin sélectionné. Retourne le skin par défaut si le fichier n'existe pas.
+    """
     try:
         with open("data/json/selected_skin.json", "r") as file:
             data = json.load(file)
@@ -37,11 +67,20 @@ def load_selected_skin():
         return os.path.join("./data/img/Players", "skin_01.png")
 
 def save_selected_skin(skin):
+    """
+    Sauvegarde le skin sélectionné dans le fichier JSON.
+
+    Args:
+    - skin (str): Le nom du skin sélectionné à sauvegarder.
+    """
     with open("data/json/selected_skin.json", "w") as file:
         json.dump({"selected_skin": skin}, file)
 
 
 def select_skin_menu():
+    """
+    Affiche le menu de sélection de skin, permettant de choisir parmi les skins possédés.
+    """
     running = True
     owned_skins = load_skins()
     selected_skin = load_selected_skin()
