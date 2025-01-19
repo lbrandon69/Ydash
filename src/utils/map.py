@@ -12,7 +12,7 @@ def init_level(map, elements):
                 end_position = position 
                 element = End(None, position, elements)
             elif tile == "0":
-                Platform("./data/img/Grounds/ground_01.png", position, elements)
+                Platform(None, position, elements)
             elif tile == "Coin":
                 Coin("./data/img/Coins/coin_01.png", position, elements)
             elif tile == "Spike":
