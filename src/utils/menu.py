@@ -2,6 +2,7 @@ import pygame
 import sys
 import csv
 import time
+import random
 from pathlib import Path
 from utils.map import block_map, init_level, draw_editor_grid
 from utils.player import Player
@@ -24,6 +25,8 @@ def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
+
+
 
 def draw_button(surface, text, rect, color, hover_color, font, mouse_pos, mouse_click):
     if rect.collidepoint(mouse_pos):
@@ -98,16 +101,29 @@ def start_game(level):
     BASE_BAR_WIDTH = 200
     bar_width = max(BASE_BAR_WIDTH, level_width // 10)
 
-    player_image = pygame.Surface((32, 32))
-    player_image.fill((0, 255, 0))
-    player = Player(player_image, elements, (150, 150), elements)
+    player_image_path = "./data/img/Players/player_01.png"
+    player = Player(player_image_path, elements, (150, 150), elements)
+
+    original_background_image = pygame.image.load("./data/img/Backgrounds/background_01.png").convert()
+    background_image = pygame.transform.scale(
+        original_background_image, 
+        (original_background_image.get_width(), SCREEN_HEIGHT)
+    )
+    background_width = background_image.get_width()
+
+    gradient_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    for y in range(SCREEN_HEIGHT):
+        alpha = int((y / SCREEN_HEIGHT) * 100)
+        pygame.draw.rect(gradient_surface, (0, 0, 0, alpha), (0, y, SCREEN_WIDTH, 1))
 
     clock = pygame.time.Clock()
 
     while running:
-        screen.fill(BLUE)
-
         scroll_position += scroll_speed
+
+        for i in range(-1, SCREEN_WIDTH // background_width + 2):
+            screen.blit(background_image, (i * background_width - (scroll_position % background_width), 0))
+        screen.blit(gradient_surface, (0, 0))
 
         for element in elements:
             element.rect.x -= scroll_speed
@@ -115,6 +131,9 @@ def start_game(level):
         elements.draw(screen)
 
         player.update()
+        player.update_particles()
+        player.draw_particles(screen)
+
         if player.died:
             result = lose_screen()
             if result == "menu":
@@ -134,7 +153,6 @@ def start_game(level):
             progress = min(max((scroll_position + player.rect.x) / level_width, 0), 1)
 
         draw_stats(screen, progress, bar_width)
-
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -146,6 +164,7 @@ def start_game(level):
                     running = False
 
         clock.tick(60)
+
 
 def choose_level():
     button_level_1 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200, 300, 50)
