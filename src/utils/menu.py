@@ -10,6 +10,7 @@ from utils.map import block_map, init_level, draw_editor_grid
 from utils.player import Player
 from utils.background import draw_star_background
 from utils.progressBar import draw_stats
+from utils.shop import load_coins, save_coins, load_skins, save_skins, load_skins, save_selected_skin, load_selected_skin
 
 pygame.init()
 
@@ -36,7 +37,7 @@ def draw_text(text, font, color, surface, x, y):
     - x (int): La coordonnée x de la position du centre du texte.
     - y (int): La coordonnée y de la position du centre du texte.
     """
-    text_obj = font.render(text, True, BLACK)
+    text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
 
@@ -63,7 +64,7 @@ def draw_button(surface, text, rect, color, hover_color, font, mouse_pos, mouse_
             return True
     else:
         pygame.draw.rect(surface, color, rect, width=0, border_radius=15) 
-    draw_text(text, font, WHITE, surface, rect.centerx, rect.centery)
+    draw_text(text, font, BLACK, surface, rect.centerx, rect.centery)
     return False
 
 def main_menu():
@@ -74,25 +75,23 @@ def main_menu():
     créer un niveau, et quitter. En fonction du choix de l'utilisateur, elle appelle
     d'autres fonctions pour démarrer le jeu, choisir un niveau, ou quitter le jeu.
     """
-    button_play = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200, 300, 50)
-    button_levels = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
-    button_create = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 50)
-    button_shop = pygame.Rect(SCREEN_WIDTH // 2 - 150, 500, 300, 50)
-    button_select_skin = pygame.Rect(SCREEN_WIDTH // 2 - 150, 600, 300, 50)
-    button_quit = pygame.Rect(SCREEN_WIDTH // 2 - 150, 700, 300, 50)
+    button_play = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
+    button_levels = pygame.Rect(SCREEN_WIDTH // 2 - 150, 370, 300, 50)
+    button_create = pygame.Rect(SCREEN_WIDTH // 2 - 150, 440, 300, 50)
+    button_shop = pygame.Rect(SCREEN_WIDTH // 2 - 150, 510, 300, 50)
+    button_quit = pygame.Rect(SCREEN_WIDTH // 2 - 150, 660, 300, 50)
 
     click_released = False
     level = 0
 
     while True:
-        total_coins = load_coins()  # Recharger les pièces à chaque itération
+        total_coins = load_coins()  
         screen.fill(BLACK)
         draw_star_background(screen)
 
         image = pygame.image.load("data/img/Logo/logo_01.png") 
         image = pygame.transform.scale(image, (450, 150))
         screen.blit(image, (SCREEN_WIDTH // 2 - image.get_width() // 2, 100))
-        draw_text(f"Total Coins: {total_coins}", font, WHITE, screen, SCREEN_WIDTH - 150, 50)
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
@@ -110,21 +109,17 @@ def main_menu():
             elif button_shop.collidepoint(mouse_pos):
                 player = Player("./data/img/Players/skin_01.png", pygame.sprite.Group(), (150, 150))
                 shop_menu(player)
-            elif button_select_skin.collidepoint(mouse_pos):
-                select_skin_menu()
             elif button_quit.collidepoint(mouse_pos):
                 pygame.quit()
                 sys.exit()
 
             click_released = False  
 
-        draw_button(screen, "Jouer", button_play, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Choisir un niveau", button_levels, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Crée un niveau", button_create, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Shop", button_shop, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Sélectionner un skin", button_select_skin, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Quitter", button_quit, GRAY, BLUE, font, mouse_pos, False)
-
+        draw_button(screen, "Jouer", button_play, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Choisir un niveau", button_levels, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Crée un niveau", button_create, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Shop", button_shop, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Quitter", button_quit, WHITE, (135,224,45), font, mouse_pos, False)
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -156,7 +151,7 @@ def start_game(level):
     BASE_BAR_WIDTH = 200
     bar_width = max(BASE_BAR_WIDTH, level_width // 10)
 
-    player_image_path = load_selected_skin()  # Charger le skin sélectionné
+    player_image_path = load_selected_skin()  
     player = Player(player_image_path, elements, (150, 150), elements)
 
     original_background_image = pygame.image.load("./data/img/Backgrounds/background_01.png").convert()  # Utiliser l'arrière-plan sélectionné
@@ -209,8 +204,7 @@ def start_game(level):
 
         draw_stats(screen, progress, bar_width)
 
-        # Afficher le compteur de pièces
-        draw_text(f"Coins: {player.coins}", font, WHITE, screen, SCREEN_WIDTH - 100, 50)
+        draw_text(f"Coins: {player.coins}", font, BLACK, screen, SCREEN_WIDTH - 100, 50)
 
         pygame.display.flip()
 
@@ -451,12 +445,11 @@ def shop_menu(player):
     while running:
         screen.fill(BLACK)
         draw_text("Shop", font, WHITE, screen, SCREEN_WIDTH // 2, 100)
-        draw_text(f"Total Coins: {total_coins}", font, WHITE, screen, SCREEN_WIDTH - 150, 50)
+        draw_text(f"Total Coins: {total_coins}", font, WHITE, screen, SCREEN_WIDTH - 200, 50)
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
 
-        # Display skins
         for i, skin in enumerate(skins):
             skin_rect = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200 + i * 100, 300, 50)
             skin_image = pygame.image.load(os.path.join("./data/img/Players", skin)).convert_alpha()
@@ -470,90 +463,9 @@ def shop_menu(player):
                 if draw_button(screen, f"Skin {i+1} - {skin_price} coins", skin_rect, GRAY, BLUE, font, mouse_pos, mouse_click):
                     if total_coins >= skin_price:
                         total_coins -= skin_price
-                        save_coins(total_coins)  # Sauvegarder les pièces après chaque achat
-                        save_skins(skin)  # Sauvegarder le skin acheté
+                        save_coins(total_coins)  
+                        save_skins(skin)
                         owned_skins.append(skin)
-
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-
-def load_coins():
-    try:
-        with open("coins.json", "r") as file:
-            data = json.load(file)
-            return data.get("coins", 0)
-    except FileNotFoundError:
-        return 0
-
-def save_coins(coins):
-    with open("coins.json", "w") as file:
-        json.dump({"coins": coins}, file)
-
-def load_skins():
-    try:
-        with open("skins.json", "r") as file:
-            data = json.load(file)
-            return data.get("skins", [])
-    except FileNotFoundError:
-        return []
-
-def save_skins(skin):
-    skins = load_skins()
-    if skin not in skins:
-        skins.append(skin)
-    with open("skins.json", "w") as file:
-        json.dump({"skins": skins}, file)
-
-def load_selected_skin():
-    try:
-        with open("selected_skin.json", "r") as file:
-            data = json.load(file)
-            return os.path.join("./data/img/Players", data.get("selected_skin", "skin_01.png"))
-    except FileNotFoundError:
-        return os.path.join("./data/img/Players", "skin_01.png")
-
-def save_selected_skin(skin):
-    with open("selected_skin.json", "w") as file:
-        json.dump({"selected_skin": skin}, file)
-
-
-def select_skin_menu():
-    running = True
-    owned_skins = load_skins()
-    selected_skin = load_selected_skin()
-    skin_index = owned_skins.index(selected_skin) if selected_skin in owned_skins else 0
-
-    while running:
-        screen.fill(BLACK)
-        draw_text("Select Your Skin", font, WHITE, screen, SCREEN_WIDTH // 2, 100)
-
-        mouse_pos = pygame.mouse.get_pos()
-        mouse_click = pygame.mouse.get_pressed()[0]
-
-        # Display the selected skin
-        skin_image = pygame.image.load(os.path.join("./data/img/Players", owned_skins[skin_index])).convert_alpha()
-        skin_image = pygame.transform.scale(skin_image, (100, 100))
-        screen.blit(skin_image, (SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 50))
-
-        # Display navigation buttons
-        button_prev = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2, 50, 50)
-        button_next = pygame.Rect(SCREEN_WIDTH // 2 + 100, SCREEN_HEIGHT // 2, 50, 50)
-        button_select = pygame.Rect(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 + 100, 100, 50)
-
-        if draw_button(screen, "<", button_prev, GRAY, BLUE, font, mouse_pos, mouse_click):
-            skin_index = (skin_index - 1) % len(owned_skins)
-        if draw_button(screen, ">", button_next, GRAY, BLUE, font, mouse_pos, mouse_click):
-            skin_index = (skin_index + 1) % len(owned_skins)
-        if draw_button(screen, "Select", button_select, GRAY, BLUE, font, mouse_pos, mouse_click):
-            selected_skin = owned_skins[skin_index]
-            save_selected_skin(selected_skin)
 
         pygame.display.flip()
 
