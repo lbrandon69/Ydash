@@ -11,6 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.platforms = platforms  
         self.died = False 
         self.win = False  
+        self.coin = 0
         
         self.image = pygame.transform.smoothscale(image, (32, 32))  
         self.rect = self.image.get_rect(center=pos)  
@@ -25,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         for p in platforms:
             if pygame.sprite.collide_rect(self, p):
                 if isinstance(p, Coin):
+                    self.coin += 1
                     p.kill()
                 elif isinstance(p, Spike):
                     self.died = True 

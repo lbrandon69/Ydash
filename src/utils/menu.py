@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 from utils.map import block_map, init_level, draw_editor_grid
 from utils.player import Player
+from utils.progressBar import draw_stats
 
 pygame.init()
 
@@ -79,7 +80,6 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
 
-
 def start_game(level):
     running = True
     elements = pygame.sprite.Group()
@@ -87,12 +87,19 @@ def start_game(level):
     scroll_speed = 4
     scroll_position = 0
 
-    levels = ["data/maps/level_1.csv", "data/maps/level_2.csv","data/maps/custom_map.csv"]
+    levels = ["data/maps/level_1.csv", "data/maps/level_2.csv", "data/maps/custom_map.csv"]
     level_data = block_map(levels[level])
-    init_level(level_data, elements)
+    
+    end_position = init_level(level_data, elements)
+
+    TILE_SIZE = 50
+    level_width = len(level_data[0]) * TILE_SIZE
+
+    BASE_BAR_WIDTH = 200
+    bar_width = max(BASE_BAR_WIDTH, level_width // 10)
 
     player_image = pygame.Surface((32, 32))
-    player_image.fill((0, 255, 0)) 
+    player_image.fill((0, 255, 0))
     player = Player(player_image, elements, (150, 150), elements)
 
     clock = pygame.time.Clock()
@@ -101,11 +108,9 @@ def start_game(level):
         screen.fill(BLUE)
 
         scroll_position += scroll_speed
-        if scroll_position > len(level_data) * 50:
-            scroll_position = 0
 
         for element in elements:
-            element.rect.x -= scroll_speed 
+            element.rect.x -= scroll_speed
 
         elements.draw(screen)
 
@@ -122,6 +127,13 @@ def start_game(level):
                 running = False
             elif result == "replay":
                 start_game(level)
+
+        if end_position:
+            progress = min(max((scroll_position + player.rect.x) / (end_position[0]), 0), 1)
+        else:
+            progress = min(max((scroll_position + player.rect.x) / level_width, 0), 1)
+
+        draw_stats(screen, progress, bar_width)
 
         pygame.display.flip()
 

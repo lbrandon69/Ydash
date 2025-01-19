@@ -4,27 +4,21 @@ from pathlib import Path
 from utils.obstacles import Platform, Coin, Spike, End
 
 def init_level(map, elements):
-    x = 0
-    y = 0
+    end_position = None
+    for y, row in enumerate(map):
+        for x, tile in enumerate(row):
+            position = (x * 32, y * 32)
+            if tile == "End":
+                end_position = position 
+                element = End(None, position, elements)
+            elif tile == "0":
+                Platform(None, position, elements)
+            elif tile == "Coin":
+                Coin(None, position, elements)
+            elif tile == "Spike":
+                Spike(None, position, elements)
 
-    for row in map:
-        for col in row:
-
-            if col == "0":
-                Platform(None, (x, y), elements)  
-
-            if col == "Coin":
-                Coin(None, (x, y), elements) 
-
-            if col == "Spike":
-                Spike(None, (x, y), elements) 
-
-            if col == "End":
-                End(None, (x, y), elements) 
-
-            x += 32 
-        y += 32
-        x = 0
+    return end_position 
 
 def block_map(level_num):
     base_path = Path(__file__).resolve().parent.parent.parent
