@@ -250,7 +250,22 @@ def create_level():
                     level_path = base_path / "data/maps/custom_map.csv"
                     with open(level_path, "w", newline="") as csvfile:
                         writer = csv.writer(csvfile)
-                        for row in grid:
+
+                        end_position = -1
+                        for row_index, row in enumerate(grid):
+                            if "End" in row:
+                                end_position = row.index("End")
+                                for i in range(row_index):
+                                    grid[i] = row[:end_position + 1]
+                                
+                                break
+
+                        for row_index, row in enumerate(grid):
+                            last_non_empty = -1
+                            for i in range(len(row)):
+                                if row[i] != -1: 
+                                    last_non_empty = i
+                            row = row[:last_non_empty + 1] if last_non_empty != -1 else row
                             writer.writerow(row)
                 elif event.key == pygame.K_ESCAPE:
                     running = False
