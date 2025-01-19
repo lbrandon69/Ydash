@@ -61,6 +61,7 @@ class Spike(pygame.sprite.Sprite):
     """
     def __init__(self, image, position, group):
         super().__init__(group)
+        self.width, self.height = 28, 28
         self.image = pygame.Surface((30, 30), pygame.SRCALPHA)
         pygame.draw.polygon(
             self.image, 

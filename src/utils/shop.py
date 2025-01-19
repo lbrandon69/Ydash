@@ -22,7 +22,11 @@ def save_coins(coins):
     Args:
     - coins (int): Le nombre de pièces à sauvegarder.
     """
-    with open("data/json/coins.json", "w") as file:
+    directory = "data/json"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    with open(os.path.join(directory, "coins.json"), "w") as file:
         json.dump({"coins": coins}, file)
 
 def load_skins():
