@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.speed_x = 4
         
         self.rotation_angle = 0 
-        self.rotation_speed = -6
+        self.rotation_speed = -8
 
     def collide(self, yvel, platforms):
         for p in platforms:
