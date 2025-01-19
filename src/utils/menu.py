@@ -6,6 +6,7 @@ import random
 from pathlib import Path
 from utils.map import block_map, init_level, draw_editor_grid
 from utils.player import Player
+from utils.background import draw_star_background
 from utils.progressBar import draw_stats
 
 pygame.init()
@@ -19,7 +20,7 @@ BLACK = (0, 0, 0)
 BLUE = (0, 150, 255)
 GRAY = (100, 100, 100)
 
-font = pygame.font.Font(None, 50)
+font = pygame.font.Font(None, 30)
 
 def draw_text(text, font, color, surface, x, y):
     """
@@ -33,7 +34,7 @@ def draw_text(text, font, color, surface, x, y):
     - x (int): La coordonnée x de la position du centre du texte.
     - y (int): La coordonnée y de la position du centre du texte.
     """
-    text_obj = font.render(text, True, color)
+    text_obj = font.render(text, True, BLACK)
     text_rect = text_obj.get_rect(center=(x, y))
     surface.blit(text_obj, text_rect)
 
@@ -55,11 +56,11 @@ def draw_button(surface, text, rect, color, hover_color, font, mouse_pos, mouse_
     - bool: True si le bouton a été cliqué, sinon False.
     """
     if rect.collidepoint(mouse_pos):
-        pygame.draw.rect(surface, hover_color, rect)
+        pygame.draw.rect(surface, hover_color, rect, width=0, border_radius=15) 
         if mouse_click:
             return True
     else:
-        pygame.draw.rect(surface, color, rect)
+        pygame.draw.rect(surface, color, rect, width=0, border_radius=15) 
     draw_text(text, font, WHITE, surface, rect.centerx, rect.centery)
     return False
 
@@ -71,18 +72,21 @@ def main_menu():
     créer un niveau, et quitter. En fonction du choix de l'utilisateur, elle appelle
     d'autres fonctions pour démarrer le jeu, choisir un niveau, ou quitter le jeu.
     """
-    button_play = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200, 300, 50)
-    button_levels = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
-    button_create = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 50)
-    button_quit = pygame.Rect(SCREEN_WIDTH // 2 - 150, 500, 300, 50)
+    button_play = pygame.Rect(SCREEN_WIDTH // 2 - 125, 300, 250, 50)
+    button_levels = pygame.Rect(SCREEN_WIDTH // 2 - 125, 370, 250, 50)
+    button_create = pygame.Rect(SCREEN_WIDTH // 2 - 125, 440, 250, 50)
+    button_quit = pygame.Rect(SCREEN_WIDTH // 2 - 125, 510, 250, 50)
 
     click_released = False
     level = 0
 
     while True:
         screen.fill(BLACK)
+        draw_star_background(screen)
 
-        draw_text("YDash", font, WHITE, screen, SCREEN_WIDTH // 2, 100)
+        image = pygame.image.load("data/img/Logo/logo_01.png") 
+        image = pygame.transform.scale(image, (450, 150))
+        screen.blit(image, (SCREEN_WIDTH // 2 - image.get_width() // 2, 100))
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
@@ -103,10 +107,10 @@ def main_menu():
 
             click_released = False  
 
-        draw_button(screen, "Jouer", button_play, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Choisir un niveau", button_levels, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Crée un niveau", button_create, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Quitter", button_quit, GRAY, BLUE, font, mouse_pos, False)
+        draw_button(screen, "Jouer", button_play, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Choisir un niveau", button_levels, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Crée un niveau", button_create, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Quitter", button_quit, WHITE, (135,224,45), font, mouse_pos, False)
 
         pygame.display.flip()
 
@@ -211,9 +215,9 @@ def choose_level():
     Returns:
     - int: Le niveau sélectionné.
     """
-    button_level_1 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 200, 300, 50)
-    button_level_2 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
-    button_custom_game = pygame.Rect(SCREEN_WIDTH // 2 - 150, 400, 300, 50)
+    button_level_1 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
+    button_level_2 = pygame.Rect(SCREEN_WIDTH // 2 - 150, 370, 300, 50)
+    button_custom_game = pygame.Rect(SCREEN_WIDTH // 2 - 150, 440, 300, 50)
 
     running = True
     click_released = False  
@@ -221,7 +225,12 @@ def choose_level():
     
     while running:
         screen.fill(BLACK)
-        draw_text("YDash", font, WHITE, screen, SCREEN_WIDTH // 2, 100)
+        draw_star_background(screen)
+
+        image = pygame.image.load("data/img/Logo/logo_01.png") 
+        image = pygame.transform.scale(image, (450, 150))
+        screen.blit(image, (SCREEN_WIDTH // 2 - image.get_width() // 2, 100))
+
 
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
@@ -240,9 +249,9 @@ def choose_level():
                 selected_level = 2
                 running = False
 
-        draw_button(screen, "Level 1", button_level_1, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Level 2", button_level_2, GRAY, BLUE, font, mouse_pos, False)
-        draw_button(screen, "Custom Level", button_custom_game, GRAY, BLUE, font, mouse_pos, False)
+        draw_button(screen, "Level 1", button_level_1, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Level 2", button_level_2, WHITE, (135,224,45), font, mouse_pos, False)
+        draw_button(screen, "Custom Level", button_custom_game, WHITE, (135,224,45), font, mouse_pos, False)
 
         pygame.display.flip()
 
@@ -267,6 +276,7 @@ def create_level():
     TILE_SIZE = 32
 
     OBJECTS = ["0", "Coin", "Spike", "End"]
+    obj_name = ["Block", "Coin", "Spike", "End"]
     selected_object = 0
 
     cols = (SCREEN_WIDTH // TILE_SIZE) * 10
@@ -275,6 +285,7 @@ def create_level():
     offset_x = 0
 
     time.sleep(0.1)
+    sprite_group = pygame.sprite.Group()
 
     while running:
         mouse_pos = pygame.mouse.get_pos()
@@ -334,11 +345,13 @@ def create_level():
             if 0 <= mouse_x < cols and 0 <= mouse_y < rows:
                 grid[mouse_y][mouse_x] = -1
 
-        draw_editor_grid(screen, grid, TILE_SIZE, offset_x)
+        draw_editor_grid(screen, grid, TILE_SIZE, offset_x, sprite_group)
         pygame.draw.rect(screen, WHITE, (10, SCREEN_HEIGHT - 50, 150, 40))
-        draw_text(f"Objet: {OBJECTS[selected_object]}", font, BLACK, screen, 85, SCREEN_HEIGHT - 30)
+        draw_text(f"{obj_name[selected_object]}", font, BLACK, screen, 85, SCREEN_HEIGHT - 30)
+        sprite_group.draw(screen)
 
         pygame.display.flip()
+
 
 def win_screen():
     """
@@ -351,17 +364,20 @@ def win_screen():
 
     while running:
         screen.fill(BLACK)
-        draw_text("Vous avez gagné !", font, WHITE, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+        draw_star_background(screen)
+        image = pygame.image.load("data/img/Logo/logo_win.png") 
+        image = pygame.transform.scale(image, (933, 86))
+        screen.blit(image, (SCREEN_WIDTH // 2 - image.get_width() // 2, 250))
         
+        button_replay = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 70, 300, 50)
         button_menu = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2, 300, 50)
-        button_replay = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100, 300, 50)
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
 
-        if draw_button(screen, "Retour au menu", button_menu, GRAY, BLUE, font, mouse_pos, mouse_click):
-            return "menu"
-        if draw_button(screen, "Rejouer", button_replay, GRAY, BLUE, font, mouse_pos, mouse_click):
+        if draw_button(screen, "Rejouer", button_replay, WHITE, (135,224,45), font, mouse_pos, mouse_click):
             return "replay"
+        if draw_button(screen, "Menu", button_menu, WHITE, (135,224,45), font, mouse_pos, mouse_click):
+            return "menu"
 
         pygame.display.flip()
 
@@ -381,17 +397,20 @@ def lose_screen():
 
     while running:
         screen.fill(BLACK)
-        draw_text("Vous avez perdu !", font, WHITE, screen, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 100)
+        draw_star_background(screen)
+        image = pygame.image.load("data/img/Logo/logo_loose.png") 
+        image = pygame.transform.scale(image, (933, 86))
+        screen.blit(image, (SCREEN_WIDTH // 2 - image.get_width() // 2, 250))
 
+        button_replay = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 70, 300, 50)
         button_menu = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2, 300, 50)
-        button_replay = pygame.Rect(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 + 100, 300, 50)
         mouse_pos = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()[0]
 
-        if draw_button(screen, "Retour au menu", button_menu, GRAY, BLUE, font, mouse_pos, mouse_click):
-            return "menu"
-        if draw_button(screen, "Rejouer", button_replay, GRAY, BLUE, font, mouse_pos, mouse_click):
+        if draw_button(screen, "Rejouer", button_replay, WHITE, (135,224,45), font, mouse_pos, mouse_click):
             return "replay"
+        if draw_button(screen, "Menu", button_menu, WHITE, (135,224,45), font, mouse_pos, mouse_click):
+            return "menu"
 
         pygame.display.flip()
 

@@ -16,7 +16,9 @@ def draw_stats(screen, progress, bar_width=200):
         None
     """
     bar_height = 10
-    x = 10
-    y = 10 
+    x = (screen.get_width() - bar_width) // 2
+    y = 10  
+    
     pygame.draw.rect(screen, (100, 100, 100), (x, y, bar_width, bar_height))  
     pygame.draw.rect(screen, (0, 255, 0), (x, y, progress * bar_width, bar_height)) 
+ 
