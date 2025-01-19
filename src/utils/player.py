@@ -60,7 +60,8 @@ class Player(pygame.sprite.Sprite):
                     p.kill()
                     self.coins += 1
                 elif isinstance(p, Spike):
-                    self.died = True 
+                    if pygame.sprite.collide_mask(self, p):
+                        self.died = True
                 elif isinstance(p, End):
                     self.win = True 
                 elif isinstance(p, Platform):

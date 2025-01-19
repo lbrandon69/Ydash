@@ -47,6 +47,8 @@ class Coin(pygame.sprite.Sprite):
         self.image.blit(scaled_image, (x_offset, y_offset))
         self.rect = self.image.get_rect(topleft=position)
 
+import pygame
+
 class Spike(pygame.sprite.Sprite):
     """
     Représente un piège à pointes dans le jeu.
@@ -63,12 +65,33 @@ class Spike(pygame.sprite.Sprite):
         super().__init__(group)
         self.width, self.height = 28, 28
         self.image = pygame.Surface((30, 30), pygame.SRCALPHA)
+        
         pygame.draw.polygon(
             self.image, 
             (255, 0, 0),
-            [(16, 0), (0, 30), (30, 30)]
+            [(16, 0), (0, 30), (30, 30)] 
         )
+        
         self.rect = self.image.get_rect(topleft=(position[0], position[1] + 2))
+        
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def update(self):
+        """Met à jour la position de la hitbox."""
+        self.mask.set_offset(self.rect.topleft)
+
+    def check_collision(self, other_sprite):
+        """
+        Vérifie la collision avec un autre sprite en utilisant le masque.
+
+        Args:
+            other_sprite (pygame.sprite.Sprite): Un autre sprite à tester pour la collision.
+        
+        Returns:
+            bool: True si une collision est détectée, sinon False.
+        """
+        return pygame.sprite.collide_mask(self, other_sprite)
+
 
 class End(pygame.sprite.Sprite):
     """
