@@ -11,6 +11,7 @@ from utils.player import Player
 from utils.background import draw_star_background
 from utils.music import play_music, stop_music
 from utils.progressBar import draw_stats
+from utils.settings import settings_popup, draw_settings_button
 from utils.shop import load_coins, save_coins, load_skins, save_skins, load_skins, save_selected_skin, load_selected_skin
 
 pygame.init()
@@ -70,23 +71,17 @@ def draw_button(surface, text, rect, color, hover_color, font, mouse_pos, mouse_
     return False
 
 def main_menu():
-    """
-    Affiche le menu principal et gère l'interaction de l'utilisateur.
-
-    Cette fonction crée un menu principal avec quatre boutons: jouer, choisir un niveau,
-    créer un niveau, et quitter. En fonction du choix de l'utilisateur, elle appelle
-    d'autres fonctions pour démarrer le jeu, choisir un niveau, ou quitter le jeu.
-    """
     play_music("data/music/music_01.mp3")
-    
     button_play = pygame.Rect(SCREEN_WIDTH // 2 - 150, 300, 300, 50)
     button_levels = pygame.Rect(SCREEN_WIDTH // 2 - 150, 370, 300, 50)
     button_create = pygame.Rect(SCREEN_WIDTH // 2 - 150, 440, 300, 50)
     button_shop = pygame.Rect(SCREEN_WIDTH // 2 - 150, 510, 300, 50)
     button_quit = pygame.Rect(SCREEN_WIDTH // 2 - 150, 660, 300, 50)
+    button_settings = pygame.Rect(SCREEN_WIDTH - 50, 10, 40, 40)
 
     click_released = False
     level = 0
+    settings_open = False
 
     while True:
         total_coins = load_coins()  
@@ -101,7 +96,7 @@ def main_menu():
         mouse_click = pygame.mouse.get_pressed()[0]
 
         if not mouse_click:
-            click_released = True  
+            click_released = True 
 
         if mouse_click and click_released:
             if button_play.collidepoint(mouse_pos):
@@ -118,19 +113,29 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
 
-            click_released = False  
+            click_released = False 
+
+        if draw_settings_button(screen, "Settings", button_settings, WHITE, BLUE, font, mouse_pos, mouse_click):
+            settings_open = True
+
+        if settings_open:
+            settings_popup(screen) 
+            settings_open = False
 
         draw_button(screen, "Jouer", button_play, WHITE, (135,224,45), font, mouse_pos, False)
         draw_button(screen, "Choisir un niveau", button_levels, WHITE, (135,224,45), font, mouse_pos, False)
         draw_button(screen, "Crée un niveau", button_create, WHITE, (135,224,45), font, mouse_pos, False)
         draw_button(screen, "Shop", button_shop, WHITE, (135,224,45), font, mouse_pos, False)
         draw_button(screen, "Quitter", button_quit, WHITE, (135,224,45), font, mouse_pos, False)
+
         pygame.display.flip()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+
 
 def start_game(level):
     """
